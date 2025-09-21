@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Crop Tracker</title>
+<style>
+/* --- THEME STYLES FROM index.html --- */
+:root {
+    --ivory: #FFFFF0;
+    --olive: #556B2F;
+    --shadow: 0 6px 18px rgba(0,0,0,0.12);
+    --bg-color: linear-gradient(160deg, var(--ivory), #E8E7D8 30%, var(--olive) 100%);
+    --frame-bg: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,240,0.96));
+    --text-color: #333;
+    --news-bg: #e6f7d5;
+    --news-color: #556B2F;
+    --icon-btn-bg: rgba(255,255,255,0.9);
+    --icon-color: var(--olive);
+    --ai-panel-bg: #fff;
+    --chat-ai-bg: #f0f0f0;
+    --chat-ai-color: #333;
+    --chat-user-bg: var(--olive);
+    --chat-user-color: white;
+    --send-btn-bg: var(--olive);
+    --nav-btn-color: #333;
+    --camera-btn-bg: linear-gradient(180deg, var(--olive), #6c8b46);
+    --settings-border: rgba(0,0,0,0.05);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: light;
+    --progress-bg: #d9d9d9;
+    --progress-fill: var(--olive);
+}
+
+:root.dark-mode {
+    --bg-color: linear-gradient(160deg, #1A1A1A, #282828 30%, #445a24 100%);
+    --frame-bg: linear-gradient(180deg, rgba(30,30,30,0.9), rgba(40,40,40,0.96));
+    --text-color: #F0F0F0;
+    --news-bg: #3c4c28;
+    --news-color: #e6f7d5;
+    --icon-btn-bg: rgba(60,60,60,0.9);
+    --icon-color: #e6f7d5;
+    --ai-panel-bg: #222;
+    --chat-ai-bg: #333;
+    --chat-ai-color: #f0f0f0;
+    --chat-user-bg: #6c8b46;
+    --chat-user-color: #F0F0F0;
+    --send-btn-bg: #6c8b46;
+    --nav-btn-color: #F0F0F0;
+    --camera-btn-bg: linear-gradient(180deg, #6c8b46, #445a24);
+    --settings-border: rgba(255,255,255,0.05);
+    color-scheme: dark;
+    --progress-bg: #555;
+    --progress-fill: #6c8b46;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height:100%; margin:0; background: var(--bg-color); }
+
+body {
+    display:flex; align-items:center; justify-content:center;
+}
+
+.phone-frame {
+    width: 98vw; height: 98vh; max-width: 420px; max-height: 850px;
+    background: var(--frame-bg); border-radius:28px; box-shadow:0 20px 40px rgba(0,0,0,0.15);
+    display:flex; flex-direction:column; padding:2vmin; overflow:hidden;
+}
+
+.header {
+    display:flex; justify-content:space-between; align-items:center; padding:4vmin;
+}
+
+.header-title { font-size:6vmin; color:var(--olive); text-align:center; flex-grow:1; margin:0; }
+
+.add-crop-btn { background: var(--olive); color:white; border:none; border-radius:12px; padding:3vmin 5vmin; font-size:3.5vmin; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+
+.back-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.back-btn svg {
+    width: 6vmin;
+    height: 6vmin;
+    fill: var(--icon-color);
+}
+
+.content { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:3vmin; padding:4vmin; }
+
+.crops-list { display:flex; flex-direction:column; gap:3vmin; }
+
+.crop-card {
+    background: var(--icon-btn-bg); border-radius:12px; padding:3vmin;
+    box-shadow:0 4px 8px rgba(0,0,0,0.08); display:flex; flex-direction:column; gap:1.5vmin;
+    transition: transform 0.2s ease;
+}
+
+.crop-card:hover { transform: translateY(-3px); }
+
+.crop-card h4 { margin:0; font-size:4vmin; color: var(--olive); }
+
+.crop-card p { margin:0; font-size:3vmin; color: var(--text-color); }
+
+.progress-bar { width:100%; height:6px; background:var(--progress-bg); border-radius:3px; overflow:hidden; margin-top:4px; }
+
+.progress-fill { height:100%; background:var(--progress-fill); width:0%; transition: width 0.6s ease; }
+
+.form-overlay {
+    position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3);
+    display:none; align-items:center; justify-content:center; z-index:10;
+}
+
+.add-crop-form {
+    background: var(--frame-bg); padding:4vmin; border-radius:12px; width:90%; max-width:360px;
+    display:flex; flex-direction:column; gap:2vmin;
+}
+
+.add-crop-form input, .add-crop-form select { padding:3vmin; font-size:3vmin; border-radius:8px; border:1px solid #ccc; outline:none; }
+
+.add-crop-form .btn-row { display:flex; justify-content:flex-end; gap:2vmin; margin-top:2vmin; }
+
+.add-crop-form button { border:none; border-radius:8px; padding:2.5vmin 4vmin; font-size:3vmin; font-weight:600; cursor:pointer; }
+
+#saveCropBtn { background: var(--olive); color:white; }
+#cancelAddBtn { background:#ccc; color:#333; }
+
+.developed-by { text-align:center; font-size:3vmin; color:#888; margin-top:auto; }
+
+.chart-container { background: var(--icon-btn-bg); padding:2vmin; border-radius:12px; margin-top:2vmin; }
+
+canvas { width:100%; height:180px; }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+    <header class="header">
+        <button class="back-btn" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6"/>
+            </svg>
+        </button>
+        <h1 class="header-title">Crop Tracker</h1>
+        <button class="add-crop-btn" id="addCropBtn">+ Add Crop</button>
+    </header>
+    <main class="content">
+        <section class="crops-list" id="cropsList"></section>
+        <div class="chart-container">
+            <canvas id="cropChart"></canvas>
+        </div>
+    </main>
+    <div class="developed-by">Developed by Team Azura</div>
+</div>
+
+<div class="form-overlay" id="formOverlay">
+    <form class="add-crop-form" id="addCropForm">
+        <h2>Add a Crop</h2>
+        <input type="text" id="cropName" placeholder="Crop Name" required />
+        <input type="text" id="cropVariety" placeholder="Variety"/>
+        <input type="date" id="sowingDate" required />
+        <input type="date" id="harvestDate" required />
+        <div class="btn-row">
+            <button type="button" id="cancelAddBtn">Cancel</button>
+            <button type="submit" id="saveCropBtn">Save</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const cropsList = document.getElementById("cropsList");
+const addCropBtn = document.getElementById("addCropBtn");
+const formOverlay = document.getElementById("formOverlay");
+const addCropForm = document.getElementById("addCropForm");
+const cropNameInput = document.getElementById("cropName");
+const cropVarietyInput = document.getElementById("cropVariety");
+const sowingDateInput = document.getElementById("sowingDate");
+const harvestDateInput = document.getElementById("harvestDate");
+const cancelAddBtn = document.getElementById("cancelAddBtn");
+const backBtn = document.getElementById("backBtn");
+
+let crops = JSON.parse(localStorage.getItem('userCrops')) || [];
+
+function showForm(){ formOverlay.style.display='flex'; }
+function hideForm(){ formOverlay.style.display='none'; addCropForm.reset(); }
+
+function renderCrops(){
+    cropsList.innerHTML='';
+    if(crops.length===0){
+        const p=document.createElement('p'); p.textContent="No crops added yet."; cropsList.appendChild(p);
+        return;
+    }
+    crops.forEach((crop,index)=>{
+        const card=document.createElement('div'); card.className='crop-card';
+        const sow = new Date(crop.sowingDate), harv = new Date(crop.harvestDate);
+        const totalDays = (harv-sow)/86400000;
+        const passedDays = (new Date()-sow)/86400000;
+        let percent = Math.min(100, Math.max(0, Math.round((passedDays/totalDays)*100)));
+        card.innerHTML=`<h4>${crop.name}</h4><p>Variety: ${crop.variety || '-'}</p>
+        <p>Sowing: ${crop.sowingDate} | Harvest: ${crop.harvestDate}</p>
+        <div class="progress-bar"><div class="progress-fill" style="width:${percent}%;"></div></div>
+        <button class="delete-btn" data-index="${index}">Delete</button>`;
+        cropsList.appendChild(card);
+    });
+    updateChart();
+}
+
+function saveCrops(){ localStorage.setItem('userCrops', JSON.stringify(crops)); }
+
+// Event listeners
+addCropBtn.addEventListener('click', showForm);
+cancelAddBtn.addEventListener('click', hideForm);
+backBtn.addEventListener('click', () => { window.location.href = 'index.html'; });
+
+addCropForm.addEventListener('submit', e=>{
+    e.preventDefault();
+    crops.push({
+        name: cropNameInput.value,
+        variety: cropVarietyInput.value,
+        sowingDate: sowingDateInput.value,
+        harvestDate: harvestDateInput.value
+    });
+    saveCrops();
+    renderCrops();
+    updateChart();
+    hideForm();
+});
+
+cropsList.addEventListener('click', e=>{
+    if(e.target.classList.contains('delete-btn')){
+        const index = e.target.dataset.index;
+        crops.splice(index,1);
+        saveCrops();
+        renderCrops();
+        updateChart();
+    }
+});
+
+// --- Theme Toggling ---
+function setDarkMode(isDark) {
+    document.documentElement.classList.toggle('dark-mode', isDark);
+}
+const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+setDarkMode(savedDarkMode);
+
+
+// --- Chart.js for visual crop progress ---
+let chart;
+function updateChart(){
+    const labels=crops.map(c=>c.name);
+    const data=crops.map(c=>{
+        const sow=new Date(c.sowingDate), harv=new Date(c.harvestDate);
+        const total=(harv-sow)/86400000;
+        const passed=(new Date()-sow)/86400000;
+        return Math.min(100, Math.max(0, Math.round((passed/total)*100)));
+    });
+    if(chart){ chart.destroy(); }
+    const ctx=document.getElementById('cropChart').getContext('2d');
+    chart=new Chart(ctx,{
+        type:'bar',
+        data:{ labels, datasets:[{ label:'Growth Progress (%)', data, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--progress-fill') }] },
+        options:{ scales:{ y:{ beginAtZero:true, max:100 } } }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderCrops();
+});
+</script>
+</body>
+</html>

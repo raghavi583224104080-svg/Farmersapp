@@ -104,14 +104,14 @@ body {
     }
     .top-row {
         padding: 6vmin 4vmin 2.5vmin;
-        padding-top: calc(6vmin + env(safe-area-inset-top)); 
+        padding-top: calc(6vmin + env(safe-area-inset-top));
     }
     .content {
         padding: 2.5vmin 4vmin;
     }
     .ai-panel {
         padding: 4vmin 4vmin 2vmin;
-        padding-top: calc(4vmin + env(safe-area-inset-top)); 
+        padding-top: calc(4vmin + env(safe-area-inset-top));
     }
     .settings-panel {
         padding: 4vmin 4vmin 2vmin;
@@ -135,7 +135,7 @@ body {
     padding: 1vmin;
     gap: 2vmin;
     transition: all 0.4s ease;
-    padding-top: calc(1vmin + env(safe-area-inset-top)); 
+    padding-top: calc(1vmin + env(safe-area-inset-top));
 }
 
 .weather-box {
@@ -246,9 +246,12 @@ body {
     width: 100%;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    padding: 1vmin 0;
+    padding: 1vmin 0 1vmin 4vmin;
+    padding-right: 4vmin;
 }
-
+.carousel:last-child {
+    padding-right: 4vmin;
+}
 .card {
     min-width: 78%;
     max-width: 78%;
@@ -264,6 +267,17 @@ body {
     align-items: flex-start;
     justify-content: center;
     text-align: left;
+    cursor: pointer;
+}
+.card-icon {
+    width: 15vmin;
+    height: 15vmin;
+    margin-bottom: 2vmin;
+    fill: var(--olive);
+    transition: fill 0.3s ease;
+}
+.dark-mode .card-icon {
+    fill: var(--text-color);
 }
 
 .card h2 {
@@ -338,7 +352,7 @@ body {
     cursor: pointer;
     min-width: 15vmin;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    display: flex; 
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -728,47 +742,45 @@ input:checked + .slider:before {
     </header>
     <main class="content">
         <div class="carousel-wrapper">
-            <button class="arrow left">&larr;</button>
             <div class="carousel" id="carousel">
-                <article class="card">
+                <article class="card" id="crops-card">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s-4-6-4-9a4 4 0 0 1 8 0c0 3-4 9-4 9zM12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                        <path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
+                        <path d="M12 18a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
+                        <path d="M12 21a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
+                        <path d="M12 24a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
+                        <circle cx="12" cy="12" r="2" fill="#556B2F" stroke="none" />
+                    </svg>
                     <h2 data-key="cropsTitle">Crops</h2>
                     <p data-key="cropsDescription">Crop info, tips and schedules.</p>
                 </article>
-                <article class="card">
+                <article class="card" id="market-price-card">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                        <line x1="12" y1="14" x2="12" y2="18" />
+                        <line x1="8" y1="14" x2="16" y2="14" />
+                        <path d="M12 18l3-3 3 3-3 3z" />
+                    </svg>
                     <h2 data-key="marketPriceTitle">Market Price</h2>
                     <p data-key="marketPriceDescription">Latest prices from local markets.</p>
                 </article>
-                <article class="card">
+                <article class="card" id="chat-box-card">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        <path d="M12 8l-3 3 3 3 3-3-3-3z" />
+                        <path d="M16.5 10.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                        <path d="M10.5 16.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                        <path d="M15 15a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                        <path d="M18 12a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                    </svg>
                     <h2 data-key="chatBoxTitle">Chat Box</h2>
                     <p data-key="chatBoxDescription">AI assistant & conversation.</p>
                 </article>
             </div>
-            <button class="arrow right">&rarr;</button>
         </div>
         <div class="dots" id="dots"></div>
-        <div class="search-row">
-            <button id="galleryBtn" class="icon-btn gallery" title="Gallery">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--icon-color)">
-                    <rect x="3" y="4" width="18" height="16" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
-                    <circle cx="8" cy="8" r="1.5"/>
-                    <path d="M3 20l4-5 5 6 7-9 5 7" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
-                </svg>
-            </button>
-            <input id="searchInput" class="search-input" type="search" data-key="askAI" placeholder="Ask AI..."/>
-            <button id="micBtn" class="icon-btn mic" title="Voice">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--icon-color)">
-                    <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
-                    <path d="M5 11a7 7 0 0 0 14 0" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
-                    <line x1="12" y1="17" x2="12" y2="21" stroke="var(--icon-color)" stroke-width="2"/>
-                    <line x1="8" y1="21" x2="16" y2="21" stroke="var(--icon-color)" stroke-width="2"/>
-                </svg>
-            </button>
-            <button id="sendBtn" class="send-btn" aria-label="Send">
-                <svg viewBox="0 0 24 24" fill="white">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                </svg>
-            </button>
-        </div>
     </main>
     <nav class="bottom-nav">
         <button class="nav-btn" id="settingsBtn">
@@ -801,6 +813,29 @@ input:checked + .slider:before {
         </div>
         <div id="aiOutput" class="ai-output-container">
             </div>
+        <div class="search-row">
+            <button id="galleryBtn" class="icon-btn gallery" title="Gallery">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--icon-color)">
+                    <rect x="3" y="4" width="18" height="16" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
+                    <circle cx="8" cy="8" r="1.5"/>
+                    <path d="M3 20l4-5 5 6 7-9 5 7" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
+                </svg>
+            </button>
+            <input id="searchInput" class="search-input" type="search" data-key="askAI" placeholder="Ask AI..."/>
+            <button id="micBtn" class="icon-btn mic" title="Voice">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--icon-color)">
+                    <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
+                    <path d="M5 11a7 7 0 0 0 14 0" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
+                    <line x1="12" y1="17" x2="12" y2="21" stroke="var(--icon-color)" stroke-width="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21" stroke="var(--icon-color)" stroke-width="2"/>
+                </svg>
+            </button>
+            <button id="sendBtn" class="send-btn" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="white">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </button>
+        </div>
         <button id="cancelBtn" class="cancel-btn" data-key="cancel">Cancel</button>
     </section>
     <section class="settings-panel" id="settingsPanel">
@@ -846,7 +881,7 @@ input:checked + .slider:before {
     // IMPORTANT: Paste your actual Gemini API key here.
     // WARNING: Storing the API key in client-side code is a major security risk.
     // For a production app, you MUST use a server-side proxy to keep your key secure.
-    const apiKey = "AIzaSyD7GhzxjmiKWj8MUCMyIRXlVUiSwwVOp1w";
+    const apiKey = "AIzaSyD7GhzxjmiKWj8MUCMyIRXlVUiSwwOOp1w";
 
     // --- UI Element References ---
     const phoneFrame = document.getElementById("phoneFrame");
@@ -872,6 +907,12 @@ input:checked + .slider:before {
     const languageSelect = document.getElementById("language-select");
     const newsBarText = document.getElementById("newsBarText");
     const darkModeToggle = document.getElementById("dark-mode-toggle");
+    
+    // --- Carousel Card References ---
+    const cropsCard = document.getElementById("crops-card");
+    const marketPriceCard = document.getElementById("market-price-card");
+    const chatBoxCard = document.getElementById("chat-box-card");
+
 
     // --- State Variables ---
     let currentAbortController = null;
@@ -881,8 +922,8 @@ input:checked + .slider:before {
     let isFetching = false;
 
     // --- Swipe gesture state variables ---
-    let startY = 0;
-    const swipeThreshold = 150; 
+    let startX = 0;
+    const swipeThreshold = 150;
 
     // --- Translations Object ---
     const translations = {
@@ -912,6 +953,7 @@ input:checked + .slider:before {
             oopsSomethingWentWrong: "Oops, something went wrong. Please try again.",
             newChatStarted: "New chat started.",
             geolocationNotSupported: "Geolocation not supported.",
+            speechRecognitionNotSupported: "Speech recognition not supported on this browser.",
             tryAgain: "try again",
             send: "Send",
             analyzeImage: "Analyze this image",
@@ -943,6 +985,7 @@ input:checked + .slider:before {
             oopsSomethingWentWrong: "ക്ഷമിക്കണം, എന്തോ പിഴവ് സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.",
             newChatStarted: "പുതിയ സംഭാഷണം ആരംഭിച്ചു.",
             geolocationNotSupported: "ജിയോലൊക്കേഷൻ പിന്തുണയ്ക്കുന്നില്ല.",
+            speechRecognitionNotSupported: "ഈ ബ്രൗസറിൽ സംഭാഷണ തിരിച്ചറിയൽ പിന്തുണയ്ക്കുന്നില്ല.",
             tryAgain: "വീണ്ടും ശ്രമിക്കുക",
             send: "അയക്കുക",
             analyzeImage: "ഈ ചിത്രം വിശകലനം ചെയ്യുക",
@@ -974,6 +1017,7 @@ input:checked + .slider:before {
             oopsSomethingWentWrong: "अरे नहीं, कुछ गलत हो गया। कृपया पुन: प्रयास करें।",
             newChatStarted: "नई चैट शुरू हुई।",
             geolocationNotSupported: "जियोलोकेशन समर्थित नहीं है।",
+            speechRecognitionNotSupported: "इस ब्राउज़र पर वाक् पहचान समर्थित नहीं है।",
             tryAgain: "पुनः प्रयास करें",
             send: "भेजें",
             analyzeImage: "इस छवि का विश्लेषण करें",
@@ -1005,6 +1049,7 @@ input:checked + .slider:before {
             oopsSomethingWentWrong: "மன்னிக்கவும், ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.",
             newChatStarted: "புதிய அரட்டை தொடங்கப்பட்டது.",
             geolocationNotSupported: "புவிஇருப்பிடம் ஆதரிக்கப்படவில்லை.",
+            speechRecognitionNotSupported: "இந்த உலாவி பேச்சு அங்கீகாரத்தை ஆதரிக்கவில்லை.",
             tryAgain: "மீண்டும் முயலுங்கள்",
             send: "அனுப்பு",
             analyzeImage: "இந்த படத்தை பகுப்பாய்வு செய்யவும்",
@@ -1028,7 +1073,7 @@ input:checked + .slider:before {
                 }
             }
         });
-        
+       
         document.title = translations[lang].appName;
         newsBarText.textContent = translations[lang].news;
 
@@ -1246,12 +1291,25 @@ input:checked + .slider:before {
             darkModeToggle.checked = isDark;
             setDarkMode(isDark);
         }
-        
+       
         // Initialize chat history and UI with the correct language
         updateLanguage(currentLanguage);
         updateLocationAndWeather();
         createDots();
         scrollToIndex(0);
+        
+        // Add click listeners to carousel cards
+        cropsCard.addEventListener('click', () => {
+            window.location.href = 'crops.html';
+        });
+
+        marketPriceCard.addEventListener('click', () => {
+            window.location.href = 'market-price.html';
+        });
+
+        chatBoxCard.addEventListener('click', () => {
+            openAI();
+        });
     });
 
     sendBtn.addEventListener("click", () => {
@@ -1282,7 +1340,7 @@ input:checked + .slider:before {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
-            recognition.lang = "en-US";
+            recognition.lang = currentLanguage;
             recognition.interimResults = false;
             showInfoPopup("listening");
             recognition.onresult = (e) => {
@@ -1310,7 +1368,7 @@ input:checked + .slider:before {
         camInput.addEventListener("change", (e) => {
             const file = e.target.files[0];
             if (file) {
-                callAI(translations[currentLanguage].analyzeImage || "Analyze this photo", file);
+                callAI(translations[currentLanguage].analyzeImage || "Analyze this image", file);
             }
         });
         camInput.click();
@@ -1364,17 +1422,8 @@ input:checked + .slider:before {
         cards[i].scrollIntoView({ behavior: "smooth", inline: "center" });
         updateDots();
     }
-
-    document.querySelector(".arrow.left").addEventListener("click", () => {
-        index = Math.max(0, index - 1);
-        scrollToIndex(index);
-    });
-
-    document.querySelector(".arrow.right").addEventListener("click", () => {
-        index = Math.min(cards.length - 1, index + 1);
-        scrollToIndex(index);
-    });
-
+    
+    // Original scroll event listener for manual scrolling
     carousel.addEventListener("scroll", () => {
         clearTimeout(carousel._t);
         carousel._t = setTimeout(() => {
@@ -1383,8 +1432,7 @@ input:checked + .slider:before {
             let bestDiff = Infinity;
             cards.forEach((c, i) => {
                 const r = c.getBoundingClientRect();
-                const center = (r.left + r.right) / 2;
-                const diff = Math.abs(center - (rect.left + rect.right) / 2);
+                const diff = Math.abs(r.left - rect.left);
                 if (diff < bestDiff) {
                     bestDiff = diff;
                     bestIndex = i;
@@ -1396,29 +1444,45 @@ input:checked + .slider:before {
     });
 
     // --- NEW: Swipe Gesture Logic ---
-    let startX = 0; 
     function handleSwipeStart(e) {
         startX = e.changedTouches[0].pageX;
     }
 
-    function handleSwipeEnd(e, closeFunction, swipeDirection) {
+    function handleSwipeEnd(e) {
         const endX = e.changedTouches[0].pageX;
         const diffX = endX - startX;
-        
-        if (swipeDirection === 'right' && diffX > swipeThreshold) {
-            closeFunction();
+
+        // Handle swipes from the main phone frame
+        if (e.currentTarget === phoneFrame) {
+            if (diffX > swipeThreshold && !aiPanel.classList.contains('active')) {
+                openSettings();
+            } else if (diffX < -swipeThreshold && !settingsPanel.classList.contains('active')) {
+                openAI();
+            }
         }
-        else if (swipeDirection === 'left' && diffX < -swipeThreshold) {
-            closeFunction();
+        // Handle swipes to close the AI panel
+        else if (e.currentTarget === aiPanel) {
+            if (diffX > swipeThreshold) {
+                closeAI();
+            }
+        }
+        // Handle swipes to close the settings panel
+        else if (e.currentTarget === settingsPanel) {
+            if (diffX < -swipeThreshold) {
+                closeSettings();
+            }
         }
     }
 
+    // Add unified event listeners for all swipeable elements
+    phoneFrame.addEventListener('touchstart', handleSwipeStart);
+    phoneFrame.addEventListener('touchend', handleSwipeEnd);
+
     aiPanel.addEventListener('touchstart', handleSwipeStart);
-    aiPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, closeAI, 'right'));
+    aiPanel.addEventListener('touchend', handleSwipeEnd);
 
     settingsPanel.addEventListener('touchstart', handleSwipeStart);
-    settingsPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, closeSettings, 'left'));
-
+    settingsPanel.addEventListener('touchend', handleSwipeEnd);
 </script>
 </body>
 </html>
