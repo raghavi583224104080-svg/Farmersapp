@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Kerala Farmers — Mobile UI</title>
+<title data-key="appName">Kerala Farmers — Mobile UI</title>
 <style>
 :root {
     --ivory: #FFFFF0;
@@ -49,7 +49,7 @@ body {
     transition: all 0.4s ease;
 }
 
-/* --- The key change: Media query for mobile devices --- */
+/* --- Media query for mobile devices --- */
 @media (max-width: 480px) {
     body {
         padding: 0;
@@ -66,14 +66,21 @@ body {
         padding: 0;
     }
     .top-row {
-        /* Increased top padding for mobile to push content down from the top edge */
-        padding: 6vmin 4vmin 2.5vmin; 
+        padding: 6vmin 4vmin 2.5vmin;
     }
     .content {
         padding: 2.5vmin 4vmin;
     }
+    .ai-panel {
+        padding: 4vmin 4vmin 2vmin;
+    }
+    .ai-output-container {
+        padding-bottom: 1vmin;
+    }
+    .ai-header {
+        margin-bottom: 2vmin;
+    }
 }
-/* --- End of key change --- */
 
 .top-row {
     display: flex;
@@ -410,7 +417,6 @@ body {
     border-bottom-left-radius: 4px;
 }
 
-/* Existing Thinking Dots Animation */
 .thinking-dots {
     display: flex;
     justify-content: center;
@@ -491,6 +497,79 @@ body {
     visibility: visible;
     transition: opacity 0.3s ease, visibility 0s;
 }
+
+/* --- New Settings Panel Styles --- */
+.settings-panel {
+    position: absolute;
+    top: 0;
+    left: -100vw;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,240,0.96));
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    transition: left 0.4s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    padding: 4vmin;
+    z-index: 10;
+}
+
+.settings-panel.active {
+    left: 0;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4vmin;
+}
+
+.settings-header h3 {
+    margin: 0;
+    color: var(--olive);
+    font-size: 5vmin;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2vmin;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3vmin 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.setting-item label {
+    font-size: 4vmin;
+    color: #333;
+}
+
+.language-select {
+    font-size: 3.5vmin;
+    padding: 1.5vmin 2.5vmin;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: white;
+}
+
+.developed-by {
+    position: absolute;
+    bottom: 8vmin;
+    width: calc(100% - 8vmin);
+    text-align: center;
+    color: #888;
+    font-size: 3vmin;
+    letter-spacing: 0.5px;
+}
 </style>
 </head>
 <body>
@@ -498,7 +577,7 @@ body {
     <header class="top-row">
         <div class="weather-box" id="weatherBox">
             <span id="weatherTemp"></span>
-            <span id="weatherCity" class="city-name"></span>
+            <span id="weatherCity" class="city-name" data-key="gettingLocation">Getting location</span>
         </div>
         <div class="top-right">
             <button class="icon-btn location" id="locationBtn" title="Location">
@@ -513,9 +592,18 @@ body {
         <div class="carousel-wrapper">
             <button class="arrow left">&larr;</button>
             <div class="carousel" id="carousel">
-                <article class="card"><h2>Crops</h2><p>Crop info, tips and schedules.</p></article>
-                <article class="card"><h2>Market Price</h2><p>Latest prices from local markets.</p></article>
-                <article class="card"><h2>Chat Box</h2><p>AI assistant & conversation.</p></article>
+                <article class="card">
+                    <h2 data-key="cropsTitle">Crops</h2>
+                    <p data-key="cropsDescription">Crop info, tips and schedules.</p>
+                </article>
+                <article class="card">
+                    <h2 data-key="marketPriceTitle">Market Price</h2>
+                    <p data-key="marketPriceDescription">Latest prices from local markets.</p>
+                </article>
+                <article class="card">
+                    <h2 data-key="chatBoxTitle">Chat Box</h2>
+                    <p data-key="chatBoxDescription">AI assistant & conversation.</p>
+                </article>
             </div>
             <button class="arrow right">&rarr;</button>
         </div>
@@ -528,7 +616,7 @@ body {
                     <path d="M3 20l4-5 5 6 7-9 5 7" fill="none" stroke="var(--olive)" stroke-width="2"/>
                 </svg>
             </button>
-            <input id="searchInput" class="search-input" type="search" placeholder="Ask AI..."/>
+            <input id="searchInput" class="search-input" type="search" data-key="askAI" placeholder="Ask AI..."/>
             <button id="micBtn" class="icon-btn mic" title="Voice">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--olive)">
                     <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
@@ -537,13 +625,16 @@ body {
                     <line x1="8" y1="21" x2="16" y2="21" stroke="var(--olive)" stroke-width="2"/>
                 </svg>
             </button>
-            <button id="sendBtn" class="send-btn">Send</button>
+            <button id="sendBtn" class="send-btn" data-key="send">Send</button>
         </div>
     </main>
     <nav class="bottom-nav">
-        <button class="nav-btn" id="homeBtn">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l9 9h-3v9h-12v-9h-3z"/></svg>
-            <span>Home</span>
+        <button class="nav-btn" id="settingsBtn">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path fill="currentColor" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 2a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                <path fill="currentColor" d="M22.25 10.96a.75.75 0 0 0-.61-.9c-1.3-.28-2.61-.7-3.8-1.28l-1.42-.65a.75.75 0 0 0-.96.22l-1.47 2.05a.75.75 0 0 0 .23.96c.64.4.89.54 1.4.92.51.37.93.81 1.25 1.34a.75.75 0 0 0 .19.89l.86 1.05a.75.75 0 0 0 .96.25c1.19-.58 2.5-1.02 3.8-1.3a.75.75 0 0 0 .6-.9zm-6.04 7.64a.75.75 0 0 0-.9-.61c-1.3.28-2.61.7-3.8 1.28l-1.42.65a.75.75 0 0 0-.96-.22l-1.47-2.05a.75.75 0 0 0 .23-.96c.64-.4.89-.54 1.4-.92.51-.37.93-.81 1.25-1.34a.75.75 0 0 0 .19-.89l.86-1.05a.75.75 0 0 0-.96-.25c-1.19.58-2.5 1.02-3.8 1.3a.75.75 0 0 0-.6.9zm-8.8-7.65a.75.75 0 0 0 .61.9c1.3.28 2.61.7 3.8 1.28l1.42.65a.75.75 0 0 0 .96-.22l1.47-2.05a.75.75 0 0 0-.23-.96c-.64-.4-.89-.54-1.4-.92-.51-.37-.93-.81-1.25-1.34a.75.75 0 0 0-.19-.89l-.86-1.05a.75.75 0 0 0-.96-.25c-1.19.58-2.5 1.02-3.8 1.3a.75.75 0 0 0-.6.9zM7.3 16.64a.75.75 0 0 0 .9.61c1.3-.28 2.61-.7 3.8-1.28l1.42-.65a.75.75 0 0 0 .96.22l1.47 2.05a.75.75 0 0 0-.23.96c-.64.4-.89.54-1.4.92-.51.37-.93.81-1.25 1.34a.75.75 0 0 0-.19.89l-.86 1.05a.75.75 0 0 0-.96.25c-1.19-.58-2.5-1.02-3.8-1.3a.75.75 0 0 0-.6-.9z"/>
+            </svg>
+            <span data-key="settings">Settings</span>
         </button>
         <button id="cameraBtn" class="camera-btn">
             <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0-5c-1.1 0-2 .9-2 2H8l-2 2H4c-1.1 0-2 .9-2 2v10a2 2 0 0 0 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-2l-2-2h-2c0-1.1-.9-2-2-2z"/></svg>
@@ -552,24 +643,47 @@ body {
             <svg viewBox="0 0 24 24">
                 <path fill="currentColor" d="M21 6.75V15h-4.5V6.75H21Zm-6-4.5V9h-4.5V2.25H15ZM9 9v6.75H2.25V9H9Zm0 6.75V21H2.25V15.75H9Zm6 0V21H9.75V15.75H15Zm6 0V21H15.75V15.75H21Zm-6-6V15h-4.5V9H15Zm0-6.75V9h-4.5V2.25H15Z"/>
             </svg>
-            <span>AI</span>
+            <span data-key="ai">AI</span>
         </button>
     </nav>
     <input type="file" id="fileInput" accept="image/*" style="display:none" />
     <section class="ai-panel" id="aiPanel">
         <div class="ai-header">
-            <button id="newChatBtn" class="new-chat-btn">New Chat</button>
-            <h3>AI Assistant</h3>
-            <button id="closeBtn" class="close-btn" title="Close">
+            <button id="newChatBtn" class="new-chat-btn" data-key="newChat">New Chat</button>
+            <h3 data-key="aiAssistant">AI Assistant</h3>
+            <button id="closeAiBtn" class="close-btn" title="Close">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 </svg>
             </button>
         </div>
         <div id="aiOutput" class="ai-output-container">
-            <div class="chat-bubble ai">Hello! How can I assist you with your farming needs today?</div>
+            </div>
+        <button id="cancelBtn" class="cancel-btn" data-key="cancel">Cancel</button>
+    </section>
+    <section class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <button id="closeSettingsBtn" class="close-btn" title="Close">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+            <h3 data-key="settings">Settings</h3>
         </div>
-        <button id="cancelBtn" class="cancel-btn">Cancel</button>
+        <div class="settings-list">
+            <div class="setting-item">
+                <label for="language-select" data-key="language">Language</label>
+                <select id="language-select" class="language-select">
+                    <option value="en">English</option>
+                    <option value="ml">Malayalam</option>
+                    <option value="hi">Hindi</option>
+                    <option value="ta">Tamil</option>
+                </select>
+            </div>
+        </div>
+        <div class="developed-by" data-key="developedBy">
+            Developed by Team Azura
+        </div>
     </section>
     <div id="infoPopup" class="info-popup"></div>
 </div>
@@ -581,11 +695,14 @@ body {
     const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=";
 
     // IMPORTANT: Paste your actual Gemini API key here.
+    // WARNING: Storing the API key in client-side code is a major security risk.
+    // For a production app, you MUST use a server-side proxy to keep your key secure.
     const apiKey = "AIzaSyD7GhzxjmiKWj8MUCMyIRXlVUiSwwVOp1w";
 
     // --- UI Element References ---
     const phoneFrame = document.getElementById("phoneFrame");
     const aiPanel = document.getElementById("aiPanel");
+    const settingsPanel = document.getElementById("settingsPanel");
     const aiOutput = document.getElementById("aiOutput");
     const searchInput = document.getElementById("searchInput");
     const sendBtn = document.getElementById("sendBtn");
@@ -600,17 +717,173 @@ body {
     const infoPopup = document.getElementById("infoPopup");
     const aiNavBtn = document.getElementById("aiNavBtn");
     const newChatBtn = document.getElementById("newChatBtn");
-    const closeBtn = document.getElementById("closeBtn");
+    const closeAiBtn = document.getElementById("closeAiBtn");
+    const settingsBtn = document.getElementById("settingsBtn");
+    const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+    const languageSelect = document.getElementById("language-select");
 
     // --- State Variables ---
     let currentAbortController = null;
     let popupTimeout = null;
-    // Chat history array to store conversation context
-    let chatHistory = [{
-        role: "model",
-        parts: [{ text: "Hello! How can I assist you with your farming needs today?" }]
-    }];
+    let currentLanguage = localStorage.getItem('language') || 'en'; // Get from local storage, default to English
+    let chatHistory = [];
     let isFetching = false;
+
+    // --- Translations Object ---
+    const translations = {
+        en: {
+            appName: "Kerala Farmers — Mobile UI",
+            gettingLocation: "Getting location",
+            settings: "Settings",
+            ai: "AI",
+            newChat: "New Chat",
+            aiAssistant: "AI Assistant",
+            greeting: "Hello! How can I assist you with your farming needs today?",
+            cancel: "Cancel",
+            language: "Language",
+            developedBy: "Developed by Team Azura",
+            askAI: "Ask AI...",
+            cropsTitle: "Crops",
+            cropsDescription: "Crop info, tips and schedules.",
+            marketPriceTitle: "Market Price",
+            marketPriceDescription: "Latest prices from local markets.",
+            chatBoxTitle: "Chat Box",
+            chatBoxDescription: "AI assistant & conversation.",
+            listening: "Listening...",
+            voiceInputFailed: "Voice input failed.",
+            listeningStopped: "Listening stopped.",
+            pleaseWait: "Please wait for the current response.",
+            requestCanceled: "Request canceled.",
+            oopsSomethingWentWrong: "Oops, something went wrong. Please try again.",
+            newChatStarted: "New chat started.",
+            geolocationNotSupported: "Geolocation not supported.",
+            tryAgain: "try again",
+            send: "Send",
+            analyzeImage: "Analyze this image"
+        },
+        ml: {
+            appName: "കേരള കർഷകർ — മൊബൈൽ യുഐ",
+            gettingLocation: "ലൊക്കേഷൻ കണ്ടെത്തുന്നു",
+            settings: "ക്രമീകരണങ്ങൾ",
+            ai: "എ.ഐ.",
+            newChat: "പുതിയ സംഭാഷണം",
+            aiAssistant: "എ.ഐ. അസിസ്റ്റന്റ്",
+            greeting: "ഹായ്! നിങ്ങളുടെ കാർഷിക ആവശ്യങ്ങളിൽ ഞാൻ എങ്ങനെ സഹായിക്കും?",
+            cancel: "റദ്ദാക്കുക",
+            language: "ഭാഷ",
+            developedBy: "ടീം അസൂറ വികസിപ്പിച്ചത്",
+            askAI: "എ.ഐ.യോട് ചോദിക്കുക...",
+            cropsTitle: "വിളകൾ",
+            cropsDescription: "വിള വിവരങ്ങൾ, നുറുങ്ങുകൾ, ഷെഡ്യൂളുകൾ.",
+            marketPriceTitle: "വിപണി വില",
+            marketPriceDescription: "പ്രാദേശിക മാർക്കറ്റുകളിൽ നിന്നുള്ള ഏറ്റവും പുതിയ വിലകൾ.",
+            chatBoxTitle: "ചാറ്റ് ബോക്സ്",
+            chatBoxDescription: "എ.ഐ. അസിസ്റ്റന്റ് & സംഭാഷണം.",
+            listening: "കേൾക്കുന്നു...",
+            voiceInputFailed: "വോയിസ് ഇൻപുട്ട് പരാജയപ്പെട്ടു.",
+            listeningStopped: "കേൾക്കുന്നത് നിർത്തി.",
+            pleaseWait: "ദയവായി നിലവിലെ പ്രതികരണത്തിനായി കാത്തിരിക്കുക.",
+            requestCanceled: "അഭ്യർത്ഥന റദ്ദാക്കി.",
+            oopsSomethingWentWrong: "ക്ഷമിക്കണം, എന്തോ പിഴവ് സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.",
+            newChatStarted: "പുതിയ സംഭാഷണം ആരംഭിച്ചു.",
+            geolocationNotSupported: "ജിയോലൊക്കേഷൻ പിന്തുണയ്ക്കുന്നില്ല.",
+            tryAgain: "വീണ്ടും ശ്രമിക്കുക",
+            send: "അയക്കുക",
+            analyzeImage: "ഈ ചിത്രം വിശകലനം ചെയ്യുക"
+        },
+        hi: {
+            appName: "केरल किसान — मोबाइल यूआई",
+            gettingLocation: "स्थान प्राप्त हो रहा है",
+            settings: "सेटिंग्स",
+            ai: "एआई",
+            newChat: "नई चैट",
+            aiAssistant: "एआई सहायक",
+            greeting: "नमस्ते! मैं आपकी कृषि संबंधी जरूरतों में कैसे मदद कर सकता हूँ?",
+            cancel: "रद्द करें",
+            language: "भाषा",
+            developedBy: "टीम अज़ुरा द्वारा विकसित",
+            askAI: "एआई से पूछें...",
+            cropsTitle: "फसलें",
+            cropsDescription: "फसल की जानकारी, सुझाव और शेड्यूल।",
+            marketPriceTitle: "बाज़ार मूल्य",
+            marketPriceDescription: "स्थानीय बाज़ारों से नवीनतम कीमतें।",
+            chatBoxTitle: "चैट बॉक्स",
+            chatBoxDescription: "एआई सहायक और बातचीत।",
+            listening: "सुन रहा है...",
+            voiceInputFailed: "ध्वनि इनपुट विफल रहा।",
+            listeningStopped: "सुनना बंद हो गया।",
+            pleaseWait: "कृपया वर्तमान प्रतिक्रिया की प्रतीक्षा करें।",
+            requestCanceled: "अनुरोध रद्द किया गया।",
+            oopsSomethingWentWrong: "अरे नहीं, कुछ गलत हो गया। कृपया पुन: प्रयास करें।",
+            newChatStarted: "नई चैट शुरू हुई।",
+            geolocationNotSupported: "जियोलोकेशन समर्थित नहीं है।",
+            tryAgain: "पुनः प्रयास करें",
+            send: "भेजें",
+            analyzeImage: "इस छवि का विश्लेषण करें"
+        },
+        ta: {
+            appName: "கேரளா விவசாயிகள் — மொபைல் யுஐ",
+            gettingLocation: "இருப்பிடம் பெறுகிறது",
+            settings: "அமைப்புகள்",
+            ai: "ஏஐ",
+            newChat: "புதிய அரட்டை",
+            aiAssistant: "ஏஐ உதவியாளர்",
+            greeting: "வணக்கம்! உங்கள் விவசாய தேவைகளுக்கு நான் எப்படி உதவ முடியும்?",
+            cancel: "ரத்து செய்",
+            language: "மொழி",
+            developedBy: "டீம் அசுரா மூலம் உருவாக்கப்பட்டது",
+            askAI: "ஏஐ-யிடம் கேளுங்கள்...",
+            cropsTitle: "பயிர்கள்",
+            cropsDescription: "பயிர் தகவல், குறிப்புகள் மற்றும் அட்டவணைகள்.",
+            marketPriceTitle: "சந்தை விலை",
+            marketPriceDescription: "உள்ளூர் சந்தைகளிலிருந்து சமீபத்திய விலைகள்.",
+            chatBoxTitle: "அரட்டை பெட்டி",
+            chatBoxDescription: "ஏஐ உதவியாளர் மற்றும் உரையாடல்.",
+            listening: "கேட்டுக் கொண்டிருக்கிறது...",
+            voiceInputFailed: "குரல் உள்ளீடு தோல்வியடைந்தது.",
+            listeningStopped: "கேட்பது நிறுத்தப்பட்டது.",
+            pleaseWait: "தற்போதைய பதிலுக்காக காத்திருக்கவும்.",
+            requestCanceled: "கோரிக்கை ரத்து செய்யப்பட்டது.",
+            oopsSomethingWentWrong: "மன்னிக்கவும், ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.",
+            newChatStarted: "புதிய அரட்டை தொடங்கப்பட்டது.",
+            geolocationNotSupported: "புவிஇருப்பிடம் ஆதரிக்கப்படவில்லை.",
+            tryAgain: "மீண்டும் முயலுங்கள்",
+            send: "அனுப்பு",
+            analyzeImage: "இந்த படத்தை பகுப்பாய்வு செய்யவும்"
+        }
+    };
+
+    // --- Language Translation Function ---
+    function updateLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('language', lang); // Save language preference
+
+        const elementsToTranslate = document.querySelectorAll('[data-key]');
+        elementsToTranslate.forEach(el => {
+            const key = el.getAttribute('data-key');
+            if (translations[lang] && translations[lang][key]) {
+                if (el.tagName === 'INPUT' && el.type === 'search') {
+                    el.placeholder = translations[lang][key];
+                } else {
+                    el.textContent = translations[lang][key];
+                }
+            }
+        });
+        
+        // Update document title
+        document.title = translations[lang].appName;
+
+        // Re-render chat history with the new language. This is crucial for fixing the bug.
+        renderChat();
+    }
+
+    function resetChatHistory() {
+        chatHistory = [{
+            role: "model",
+            parts: [{ text: translations[currentLanguage].greeting }]
+        }];
+        renderChat();
+    }
 
     // --- Panel Control Functions ---
     function openAI() {
@@ -625,14 +898,23 @@ body {
         }
     }
 
+    function openSettings() {
+        settingsPanel.classList.add("active");
+    }
+
+    function closeSettings() {
+        settingsPanel.classList.remove("active");
+    }
+
     // --- Info Popup Function ---
-    function showInfoPopup(message) {
+    function showInfoPopup(messageKey) {
         clearTimeout(popupTimeout);
-        infoPopup.innerText = message;
+        const translatedMessage = translations[currentLanguage][messageKey] || messageKey;
+        infoPopup.innerText = translatedMessage;
         infoPopup.classList.add('show');
         popupTimeout = setTimeout(() => {
             infoPopup.classList.remove('show');
-        }, 3000); // Popup disappears after 3 seconds
+        }, 3000);
     }
 
     // --- Chat Rendering Functions ---
@@ -642,7 +924,6 @@ body {
             const bubble = document.createElement('div');
             bubble.classList.add('chat-bubble', message.role);
             if (message.parts.some(p => p.inlineData)) {
-                 // Handle messages with images
                  bubble.innerHTML = message.parts.map(p => {
                     if (p.text) return `<p>${p.text}</p>`;
                     if (p.inlineData) return `<img src="data:${p.inlineData.mimeType};base64,${p.inlineData.data}" style="max-width:100%; border-radius:12px;">`;
@@ -659,14 +940,13 @@ body {
     // --- AI Integration Functions ---
     async function callAI(prompt, imageFile = null) {
         if (isFetching) {
-            showInfoPopup("Please wait for the current response.");
+            showInfoPopup("pleaseWait");
             return;
         }
 
         isFetching = true;
         cancelBtn.classList.add('show');
 
-        // Append user message to history and render
         const userMessage = {
             role: "user",
             parts: [{ text: prompt }]
@@ -689,7 +969,6 @@ body {
         searchInput.value = "";
         openAI();
 
-        // Add thinking animation
         const thinkingBubble = document.createElement('div');
         thinkingBubble.classList.add('chat-bubble', 'ai');
         thinkingBubble.innerHTML = `
@@ -702,7 +981,6 @@ body {
 
         const payload = {
             contents: chatHistory,
-            // You can add more generationConfig options here
         };
 
         currentAbortController = new AbortController();
@@ -715,7 +993,7 @@ body {
                 body: JSON.stringify(payload),
                 signal: signal
             });
-            
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(`API Error: ${response.status} - ${errorData.error.message}`);
@@ -723,8 +1001,7 @@ body {
 
             const data = await response.json();
             const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received. Please try again.";
-            
-            // Remove thinking bubble and add AI response
+
             aiOutput.removeChild(thinkingBubble);
             const aiMessage = {
                 role: "model",
@@ -734,12 +1011,11 @@ body {
             renderChat();
         } catch (err) {
             if (err.name === 'AbortError') {
-                showInfoPopup("Request canceled.");
+                showInfoPopup("requestCanceled");
             } else {
                 console.error("AI API Error:", err);
-                showInfoPopup("Oops, something went wrong. Please try again.");
+                showInfoPopup("oopsSomethingWentWrong");
             }
-            // Remove thinking bubble on error
             if (aiOutput.contains(thinkingBubble)) {
                 aiOutput.removeChild(thinkingBubble);
             }
@@ -752,12 +1028,12 @@ body {
 
     // --- Weather and Location Functions ---
     async function updateLocationAndWeather() {
-        weatherTempSpan.textContent = "..."
-        weatherCitySpan.textContent = "getting location";
+        weatherTempSpan.textContent = "...";
+        weatherCitySpan.textContent = translations[currentLanguage].gettingLocation;
 
         if (!navigator.geolocation) {
             weatherTempSpan.textContent = "Error";
-            weatherCitySpan.textContent = "Geolocation not supported.";
+            weatherCitySpan.textContent = translations[currentLanguage].geolocationNotSupported;
             return;
         }
 
@@ -765,15 +1041,12 @@ body {
             try {
                 const lat = pos.coords.latitude;
                 const lon = pos.coords.longitude;
-
-                // Fetch weather
                 const weatherRes = await fetch(`${OPEN_METEO_API}?latitude=${lat}&longitude=${lon}&current_weather=true`);
                 const weatherData = await weatherRes.json();
                 if (weatherData.current_weather) {
                     weatherTempSpan.textContent = `${Math.round(weatherData.current_weather.temperature)}°C`;
                 }
 
-                // Fetch city name
                 const geoRes = await fetch(`${BIGDATACLOUD_API}?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
                 const geoData = await geoRes.json();
                 if (geoData.city) {
@@ -782,21 +1055,29 @@ body {
             } catch (err) {
                 console.error("Location/Weather Error:", err);
                 weatherTempSpan.textContent = "Error";
-                weatherCitySpan.textContent = "try again";
+                weatherCitySpan.textContent = translations[currentLanguage].tryAgain;
             }
         }, (err) => {
             console.error("Geolocation Error:", err);
             weatherTempSpan.textContent = "Error";
-            weatherCitySpan.textContent = "try again";
+            weatherCitySpan.textContent = translations[currentLanguage].tryAgain;
         });
     }
 
     // --- Event Listeners ---
     document.addEventListener("DOMContentLoaded", () => {
+        const savedLanguage = localStorage.getItem('language');
+        if (savedLanguage) {
+            currentLanguage = savedLanguage;
+            languageSelect.value = savedLanguage;
+        }
+        
+        // Initialize chat history only once on DOM load
+        resetChatHistory();
+        updateLanguage(currentLanguage);
         updateLocationAndWeather();
         createDots();
         scrollToIndex(0);
-        renderChat();
     });
 
     sendBtn.addEventListener("click", () => {
@@ -819,32 +1100,31 @@ body {
     fileInput.addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (file) {
-            callAI("Analyze this image", file);
+            callAI(translations[currentLanguage].analyzeImage || "Analyze this image", file);
         }
     });
 
     micBtn.addEventListener("click", () => {
-        // Check for Speech Recognition support
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
             recognition.lang = "en-US";
             recognition.interimResults = false;
-            showInfoPopup("Listening...");
+            showInfoPopup("listening");
             recognition.onresult = (e) => {
                 const transcript = e.results[0][0].transcript;
                 callAI(transcript);
             };
             recognition.onerror = (e) => {
                 console.error("Speech Recognition Error:", e.error);
-                showInfoPopup("Voice input failed.");
+                showInfoPopup("voiceInputFailed");
             };
             recognition.onend = () => {
-                 showInfoPopup("Listening stopped.");
+                 showInfoPopup("listeningStopped");
             }
             recognition.start();
         } else {
-            showInfoPopup("Speech recognition is not supported by this browser.");
+            showInfoPopup("speechRecognitionNotSupported");
         }
     });
 
@@ -856,7 +1136,7 @@ body {
         camInput.addEventListener("change", (e) => {
             const file = e.target.files[0];
             if (file) {
-                callAI("Analyze this photo", file);
+                callAI(translations[currentLanguage].analyzeImage || "Analyze this photo", file);
             }
         });
         camInput.click();
@@ -870,16 +1150,17 @@ body {
 
     locationBtn.addEventListener("click", updateLocationAndWeather);
     aiNavBtn.addEventListener("click", openAI);
-    closeBtn.addEventListener("click", closeAI);
-    newChatBtn.addEventListener("click", () => {
-        chatHistory = [{
-            role: "model",
-            parts: [{ text: "Hello! How can I assist you with your farming needs today?" }]
-        }];
-        renderChat();
-        showInfoPopup("New chat started.");
+    closeAiBtn.addEventListener("click", closeAI);
+    settingsBtn.addEventListener("click", openSettings);
+    closeSettingsBtn.addEventListener("click", closeSettings);
+    languageSelect.addEventListener("change", (e) => {
+        updateLanguage(e.target.value);
     });
 
+    newChatBtn.addEventListener("click", () => {
+        resetChatHistory();
+        showInfoPopup("newChatStarted");
+    });
 
     // --- Carousel Logic ---
     const carousel = document.getElementById("carousel");
@@ -936,7 +1217,6 @@ body {
             updateDots();
         }, 80);
     });
-
 </script>
 </body>
 </html>
