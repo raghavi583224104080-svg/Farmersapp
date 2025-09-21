@@ -104,14 +104,18 @@ body {
     }
     .top-row {
         padding: 6vmin 4vmin 2.5vmin;
-        padding-top: calc(6vmin + env(safe-area-inset-top)); /* NEW */
+        padding-top: calc(6vmin + env(safe-area-inset-top)); 
     }
     .content {
         padding: 2.5vmin 4vmin;
     }
     .ai-panel {
         padding: 4vmin 4vmin 2vmin;
-        padding-top: calc(4vmin + env(safe-area-inset-top)); /* NEW */
+        padding-top: calc(4vmin + env(safe-area-inset-top)); 
+    }
+    .settings-panel {
+        padding: 4vmin 4vmin 2vmin;
+        padding-top: calc(4vmin + env(safe-area-inset-top));
     }
     .ai-output-container {
         padding-bottom: 1vmin;
@@ -131,7 +135,7 @@ body {
     padding: 1vmin;
     gap: 2vmin;
     transition: all 0.4s ease;
-    padding-top: calc(1vmin + env(safe-area-inset-top)); /* NEW */
+    padding-top: calc(1vmin + env(safe-area-inset-top)); 
 }
 
 .weather-box {
@@ -195,6 +199,7 @@ body {
 .news-bar {
     width: 100%;
     background-color: var(--news-bg);
+    margin-top: calc(1vmin + env(safe-area-inset-top));
     color: var(--news-color);
     padding: 3vmin 4vmin;
     font-size: 4vmin;
@@ -333,7 +338,7 @@ body {
     cursor: pointer;
     min-width: 15vmin;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    display: flex; /* NEW: for icon */
+    display: flex; 
     align-items: center;
     justify-content: center;
 }
@@ -852,7 +857,7 @@ input:checked + .slider:before {
     const sendBtn = document.getElementById("sendBtn");
     const galleryBtn = document.getElementById("galleryBtn");
     const fileInput = document.getElementById("fileInput");
-    const micBtn = document = document.getElementById("micBtn");
+    const micBtn = document.getElementById("micBtn");
     const cameraBtn = document.getElementById("cameraBtn");
     const cancelBtn = document.getElementById("cancelBtn");
     const locationBtn = document.getElementById("locationBtn");
@@ -877,7 +882,7 @@ input:checked + .slider:before {
 
     // --- Swipe gesture state variables ---
     let startY = 0;
-    const swipeThreshold = 150; // Adjusted for higher sensitivity
+    const swipeThreshold = 150; 
 
     // --- Translations Object ---
     const translations = {
@@ -1391,7 +1396,7 @@ input:checked + .slider:before {
     });
 
     // --- NEW: Swipe Gesture Logic ---
-    let startX = 0; // NEW: Reset to 0 as swipe is horizontal
+    let startX = 0; 
     function handleSwipeStart(e) {
         startX = e.changedTouches[0].pageX;
     }
