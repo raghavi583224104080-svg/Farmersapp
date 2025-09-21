@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kerala Farmers — Market Prices</title>
+<title>Kerala & Tamil Nadu Farmers — Market Prices</title>
 <style>
 :root {
     --ivory: #FFFFF0;
@@ -14,63 +14,76 @@
     --text-color: #333;
     --icon-btn-bg: rgba(255,255,255,0.9);
     --icon-color: var(--olive);
-    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
+
+:root.dark-mode {
+    --bg-color: linear-gradient(160deg, #1A1A1A, #282828 30%, #445a24 100%);
+    --frame-bg: linear-gradient(180deg, rgba(30,30,30,0.9), rgba(40,40,40,0.96));
+    --text-color: #F0F0F0;
+    --icon-btn-bg: rgba(60,60,60,0.9);
+    --icon-color: #e6f7d5;
+}
+
 body {
     margin:0; padding:0;
     display:flex; justify-content:center; align-items:flex-start;
     min-height:100vh;
     background: var(--bg-color);
+    transition: background 0.3s, color 0.3s;
 }
 #phone-frame {
     width: 375px; background: var(--frame-bg);
     border-radius: 40px; box-shadow: var(--shadow);
     overflow:hidden; padding-bottom:20px;
+    transition: background 0.3s;
 }
 header {
     display:flex; align-items:center; padding:15px;
     background: var(--frame-bg); position:sticky; top:0; z-index:10;
 }
 header h1 { margin:0; font-size:20px; color:var(--text-color); flex:1; text-align:center;}
-.icon-button { background: var(--icon-btn-bg); border:none; border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; cursor:pointer; margin:0 3px;}
-.icon-button svg { fill: var(--icon-color); width:18px; height:18px;}
 .screen-content { padding:15px; color: var(--text-color);}
-.info-card { background: var(--icon-btn-bg); padding:15px; border-radius:20px; text-align:center; margin-bottom:15px;}
+.info-card { background: var(--icon-btn-bg); padding:15px; border-radius:20px; text-align:center; margin-bottom:15px; transition: background 0.3s;}
 .info-card h2 { margin:0 0 5px; }
 .info-card p { margin:0; font-size:0.9em;}
 label { display:block; margin-top:10px; font-size:0.9em;}
-input, select, button { width:100%; padding:8px; margin-top:5px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box;}
+input, select, button { width:100%; padding:8px; margin-top:5px; border-radius:8px; border:1px solid #ccc; box-sizing:border-box; transition: background 0.3s, color 0.3s;}
 button { background:var(--olive); color:white; cursor:pointer; border:none;}
 button:hover { background:#6c8b46;}
 .commodity-list { margin-top:15px; }
-.commodity-item { background: var(--icon-btn-bg); padding:10px; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+.commodity-item { background: var(--icon-btn-bg); padding:10px; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.08); transition: background 0.3s;}
 .commodity-item h4 { margin:0 0 5px; font-size:1em;}
 .commodity-item p { margin:2px 0; font-size:0.85em;}
 .input-group { display:flex; gap:5px; }
 .input-group button { width:50px; padding:0; font-size:16px; }
 .unit-select { margin-top:5px; }
-#location-suggestions { border:1px solid #ccc; border-radius:5px; max-height:100px; overflow-y:auto; background:white; position:relative; z-index:5; }
-#location-suggestions div:hover { background:#f0f0f0; }
+#location-suggestions { border:1px solid #ccc; border-radius:5px; max-height:100px; overflow-y:auto; background:white; position:relative; z-index:5; transition: background 0.3s, color 0.3s;}
+#location-suggestions div:hover { background:#f0f0f0; cursor:pointer; }
 </style>
 </head>
 <body>
 <div id="phone-frame">
     <header>
         <h1>Market Prices</h1>
+        <!-- Optional: Dark Mode Toggle Button -->
+        <button style="margin-left:5px; width:40px;" onclick="toggleDarkMode()">🌓</button>
     </header>
     <div class="screen-content">
         <div class="info-card">
-            <h2>🌱 Kerala Farmers</h2>
+            <h2>🌱 Kerala & Tamil Nadu Farmers</h2>
             <p>Your companion for a thriving harvest</p>
         </div>
 
         <!-- Auto Location -->
         <label>Detected Location (Auto):</label>
-        <input type="text" id="auto-location" readonly>
+        <div class="input-group">
+            <input type="text" id="auto-location" readonly placeholder="Detecting...">
+            <button onclick="getAutoLocation()">⟳</button>
+        </div>
 
-        <!-- Manual Location -->
-        <label>Manual Location (Optional):</label>
-        <input type="text" id="manual-location" placeholder="Enter city/district">
+        <!-- Search for Location -->
+        <label>Search for Location (Optional):</label>
+        <input type="text" id="manual-location" placeholder="Type district/state">
         <div id="location-suggestions"></div>
 
         <!-- Crop Selection -->
@@ -107,14 +120,13 @@ button:hover { background:#6c8b46;}
         <!-- Price Unit -->
         <label>Price Unit:</label>
         <select id="unit-select" class="unit-select">
-            <option value="quintal">/Quintal</option>
-            <option value="kg">/kg</option>
+            <option value="kg" selected>/kg</option>
             <option value="100kg">/100kg</option>
         </select>
 
         <!-- Market Prices -->
         <div class="commodity-list" id="commodity-prices">
-            <p>Loading market data...</p>
+            <p>Ready to search market data...</p>
         </div>
     </div>
 </div>
@@ -123,8 +135,37 @@ button:hover { background:#6c8b46;}
 const apiKey = '579b464db66ec23bdd0000017bef73f4f1bc4439694b32dbf0f004d8';
 let currentState='', currentDistrict='';
 
+// Tamil Nadu + Kerala districts
+const govtLocations = [
+    {state:"Tamil Nadu", district:"Ariyalur"}, {state:"Tamil Nadu", district:"Chengalpattu"},
+    {state:"Tamil Nadu", district:"Chennai"}, {state:"Tamil Nadu", district:"Coimbatore"},
+    {state:"Tamil Nadu", district:"Cuddalore"}, {state:"Tamil Nadu", district:"Dharmapuri"},
+    {state:"Tamil Nadu", district:"Dindigul"}, {state:"Tamil Nadu", district:"Erode"},
+    {state:"Tamil Nadu", district:"Kallakurichi"}, {state:"Tamil Nadu", district:"Kancheepuram"},
+    {state:"Tamil Nadu", district:"Kanyakumari"}, {state:"Tamil Nadu", district:"Karur"},
+    {state:"Tamil Nadu", district:"Krishnagiri"}, {state:"Tamil Nadu", district:"Madurai"},
+    {state:"Tamil Nadu", district:"Nagapattinam"}, {state:"Tamil Nadu", district:"Namakkal"},
+    {state:"Tamil Nadu", district:"Perambalur"}, {state:"Tamil Nadu", district:"Pudukkottai"},
+    {state:"Tamil Nadu", district:"Ramanathapuram"}, {state:"Tamil Nadu", district:"Ranipet"},
+    {state:"Tamil Nadu", district:"Salem"}, {state:"Tamil Nadu", district:"Sivaganga"},
+    {state:"Tamil Nadu", district:"Tenkasi"}, {state:"Tamil Nadu", district:"Thanjavur"},
+    {state:"Tamil Nadu", district:"Theni"}, {state:"Tamil Nadu", district:"Thoothukudi"},
+    {state:"Tamil Nadu", district:"Tiruchirappalli"}, {state:"Tamil Nadu", district:"Tirunelveli"},
+    {state:"Tamil Nadu", district:"Tirupattur"}, {state:"Tamil Nadu", district:"Tiruppur"},
+    {state:"Tamil Nadu", district:"Tiruvallur"}, {state:"Tamil Nadu", district:"Tiruvannamalai"},
+    {state:"Tamil Nadu", district:"Tiruvarur"}, {state:"Tamil Nadu", district:"Vellore"},
+    {state:"Tamil Nadu", district:"Viluppuram"}, {state:"Tamil Nadu", district:"Virudhunagar"},
+    {state:"Kerala", district:"Alappuzha"}, {state:"Kerala", district:"Ernakulam"}, {state:"Kerala", district:"Idukki"},
+    {state:"Kerala", district:"Kannur"}, {state:"Kerala", district:"Kasaragod"}, {state:"Kerala", district:"Kollam"},
+    {state:"Kerala", district:"Kottayam"}, {state:"Kerala", district:"Kozhikode"}, {state:"Kerala", district:"Malappuram"},
+    {state:"Kerala", district:"Palakkad"}, {state:"Kerala", district:"Pathanamthitta"}, {state:"Kerala", district:"Thiruvananthapuram"},
+    {state:"Kerala", district:"Thrissur"}, {state:"Kerala", district:"Wayanad"}
+];
+
 // Auto Location Detection
 async function getAutoLocation() {
+    const autoInput = document.getElementById('auto-location');
+    autoInput.value = 'Detecting...';
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(async pos=>{
             const lat = pos.coords.latitude;
@@ -134,53 +175,55 @@ async function getAutoLocation() {
                 const data = await res.json();
                 const district = data.address.county || data.address.city || '';
                 const state = data.address.state || '';
-                document.getElementById('auto-location').value = `${district}, ${state}`;
-                currentState = state; currentDistrict = district;
-                fetchMarketPrices();
+                if(district && state){
+                    autoInput.value = `${district}, ${state}`;
+                    currentState = state; currentDistrict = district;
+                    fetchMarketPrices();
+                } else autoInput.value = 'Unable to detect';
             } catch(e){
-                document.getElementById('auto-location').value = 'Unable to detect';
+                autoInput.value = 'Unable to detect';
             }
         }, err=>{
-            document.getElementById('auto-location').value = 'Unable to detect';
+            autoInput.value = 'Unable to detect';
         });
-    } else document.getElementById('auto-location').value = 'Geolocation not supported';
+    } else autoInput.value = 'Geolocation not supported';
 }
 
 // Manual Location Autocomplete
 const manualLocationInput = document.getElementById('manual-location');
 const suggestionBox = document.getElementById('location-suggestions');
-let manualLocationTimeout;
 
 manualLocationInput.addEventListener('input', ()=>{
-    const query = manualLocationInput.value.trim();
+    const query = manualLocationInput.value.trim().toLowerCase();
     suggestionBox.innerHTML = '';
     if(!query) return;
-    
-    clearTimeout(manualLocationTimeout);
-    manualLocationTimeout = setTimeout(async ()=>{
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`);
-            const data = await res.json();
-            suggestionBox.innerHTML = '';
-            data.forEach(place=>{
-                const div = document.createElement('div');
-                div.style.padding='5px';
-                div.style.cursor='pointer';
-                div.textContent = place.display_name;
-                div.onclick = ()=>{
-                    const district = place.address.county || place.address.city || '';
-                    const state = place.address.state || '';
-                    document.getElementById('auto-location').value = `${district}, ${state}`;
-                    currentState = state;
-                    currentDistrict = district;
-                    suggestionBox.innerHTML='';
-                    manualLocationInput.value = '';
-                    fetchMarketPrices();
-                };
-                suggestionBox.appendChild(div);
-            });
-        } catch(e){ console.log(e); }
-    }, 300);
+
+    const matches = govtLocations.filter(loc =>
+        loc.state.toLowerCase().includes(query) || loc.district.toLowerCase().includes(query)
+    ).slice(0, 5);
+
+    matches.forEach(loc=>{
+        const div = document.createElement('div');
+        div.style.padding='5px';
+        div.style.cursor='pointer';
+        div.textContent = `${loc.district}, ${loc.state}`;
+        div.onclick = ()=>{
+            document.getElementById('auto-location').value = div.textContent;
+            currentState = loc.state;
+            currentDistrict = loc.district;
+            suggestionBox.innerHTML='';
+            manualLocationInput.value='';
+            fetchMarketPrices();
+        };
+        suggestionBox.appendChild(div);
+    });
+});
+
+// Hide suggestion box when clicking outside
+document.addEventListener('click', function(e){
+    if(!manualLocationInput.contains(e.target)){
+        suggestionBox.innerHTML = '';
+    }
 });
 
 // Manual Crop
@@ -205,8 +248,13 @@ async function fetchMarketPrices(){
     if(unit==='kg') multiplier=0.01;
     else if(unit==='100kg') multiplier=1;
 
+    let url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${apiKey}&format=json&limit=10`;
+    url += `&filters[state.keyword]=${encodeURIComponent(currentState)}`;
+    url += `&filters[district]=${encodeURIComponent(currentDistrict)}`;
+    url += `&filters[commodity]=${encodeURIComponent(crop)}`;
+
     try {
-        const res = await fetch(`https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${apiKey}&format=json&filters[state.keyword]=${encodeURIComponent(currentState)}&filters[district]=${encodeURIComponent(currentDistrict)}&filters[commodity]=${encodeURIComponent(crop)}&limit=10`);
+        const res = await fetch(url);
         const data = await res.json();
         container.innerHTML = '';
         if(data.records && data.records.length){
@@ -236,19 +284,31 @@ const cropSelect = document.getElementById('crop-select');
 const manualCropInput = document.getElementById('manual-crop');
 
 cropSelect.addEventListener('change', ()=>{
-    if(cropSelect.value) manualCropInput.value = ''; // Clear manual crop if dropdown selected
+    if(cropSelect.value) manualCropInput.value = '';
     fetchMarketPrices();
 });
 
 manualCropInput.addEventListener('input', ()=>{
-    if(manualCropInput.value) cropSelect.value=''; // Clear dropdown if manual typed
+    if(manualCropInput.value) cropSelect.value='';
 });
 
 // Unit change listener
 document.getElementById('unit-select').addEventListener('change', fetchMarketPrices);
 
-// Initialize
+// Initialize default unit and auto location
+document.getElementById('unit-select').value = 'kg';
 getAutoLocation();
+
+// Dark mode toggle
+function toggleDarkMode(){
+    const isDark = document.documentElement.classList.toggle('dark-mode');
+    localStorage.setItem('dark-mode', isDark);
+}
+
+// Load saved dark mode preference
+if(localStorage.getItem('dark-mode') === 'true'){
+    document.documentElement.classList.add('dark-mode');
+}
 </script>
 </body>
 </html>

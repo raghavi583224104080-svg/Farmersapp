@@ -40,7 +40,7 @@
     --icon-color: #e6f7d5;
     --ai-panel-bg: #222;
     --chat-ai-bg: #333;
-    --chat-ai-color: #f0f0f0;
+    --chat-ai-color: #F0F0F0;
     --chat-user-bg: #6c8b46;
     --chat-user-color: #F0F0F0;
     --send-btn-bg: #6c8b46;
@@ -744,13 +744,14 @@ input:checked + .slider:before {
         <div class="carousel-wrapper">
             <div class="carousel" id="carousel">
                 <article class="card" id="crops-card">
-                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22s-4-6-4-9a4 4 0 0 1 8 0c0 3-4 9-4 9zM12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-                        <path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
-                        <path d="M12 18a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
-                        <path d="M12 21a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
-                        <path d="M12 24a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="#556B2F" stroke="none" />
-                        <circle cx="12" cy="12" r="2" fill="#556B2F" stroke="none" />
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                        <path d="M12 11C11.45 11 11 10.55 11 10V7C11 6.45 11.45 6 12 6C12.55 6 13 6.45 13 7V10C13 10.55 12.55 11 12 11Z" fill="currentColor"/>
+                        <path d="M12 17C11.45 17 11 16.55 11 16V13C11 12.45 11.45 12 12 12C12.55 12 13 12.45 13 13V16C13 16.55 12.55 17 12 17Z" fill="currentColor"/>
+                        <path d="M14.5 14.5C13.95 14.5 13.5 14.05 13.5 13.5C13.5 12.95 13.95 12.5 14.5 12.5C15.05 12.5 15.5 12.95 15.5 13.5C15.5 14.05 15.05 14.5 14.5 14.5Z" fill="currentColor"/>
+                        <path d="M9.5 9.5C8.95 9.5 8.5 9.05 8.5 8.5C8.5 7.95 8.95 7.5 9.5 7.5C10.05 7.5 10.5 7.95 10.5 8.5C10.5 9.05 10.05 9.5 9.5 9.5Z" fill="currentColor"/>
+                        <path d="M14.5 9.5C13.95 9.5 13.5 9.05 13.5 8.5C13.5 7.95 13.95 7.5 14.5 7.5C15.05 7.5 15.5 7.95 15.5 8.5C15.5 9.05 15.05 9.5 14.5 9.5Z" fill="currentColor"/>
+                        <path d="M9.5 14.5C8.95 14.5 8.5 14.05 8.5 13.5C8.5 12.95 8.95 12.5 9.5 12.5C10.05 12.5 10.5 12.95 10.5 13.5C10.5 14.05 10.05 14.5 9.5 14.5Z" fill="currentColor"/>
                     </svg>
                     <h2 data-key="cropsTitle">Crops</h2>
                     <p data-key="cropsDescription">Crop info, tips and schedules.</p>
@@ -1452,12 +1453,17 @@ input:checked + .slider:before {
         const endX = e.changedTouches[0].pageX;
         const diffX = endX - startX;
 
+        // Check if the swipe started on the carousel
+        const isSwipeOnCarousel = e.target.closest('#carousel');
+        
         // Handle swipes from the main phone frame
         if (e.currentTarget === phoneFrame) {
-            if (diffX > swipeThreshold && !aiPanel.classList.contains('active')) {
-                openSettings();
-            } else if (diffX < -swipeThreshold && !settingsPanel.classList.contains('active')) {
-                openAI();
+            if (!isSwipeOnCarousel) {
+                if (diffX > swipeThreshold) {
+                    openSettings();
+                } else if (diffX < -swipeThreshold) {
+                    openAI();
+                }
             }
         }
         // Handle swipes to close the AI panel
