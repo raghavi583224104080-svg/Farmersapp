@@ -29,7 +29,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0; /* Changed to 0 to remove outer spacing */
+    padding: 0;
 }
 
 .phone-frame {
@@ -66,7 +66,8 @@ body {
         padding: 0;
     }
     .top-row {
-        padding: 2.5vmin 4vmin;
+        /* Increased top padding for mobile to push content down from the top edge */
+        padding: 6vmin 4vmin 2.5vmin; 
     }
     .content {
         padding: 2.5vmin 4vmin;
