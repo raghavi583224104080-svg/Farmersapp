@@ -9,8 +9,45 @@
     --ivory: #FFFFF0;
     --olive: #556B2F;
     --shadow: 0 6px 18px rgba(0,0,0,0.12);
+    --bg-color: linear-gradient(160deg, var(--ivory), #E8E7D8 30%, var(--olive) 100%);
+    --frame-bg: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,240,0.96));
+    --text-color: #333;
+    --news-bg: #e6f7d5;
+    --news-color: #556B2F;
+    --icon-btn-bg: rgba(255,255,255,0.9);
+    --icon-color: var(--olive);
+    --ai-panel-bg: #fff;
+    --chat-ai-bg: #f0f0f0;
+    --chat-ai-color: #333;
+    --chat-user-bg: var(--olive);
+    --chat-user-color: white;
+    --send-btn-bg: var(--olive);
+    --nav-btn-color: #333;
+    --camera-btn-bg: linear-gradient(180deg, var(--olive), #6c8b46);
+    --settings-border: rgba(0,0,0,0.05);
     font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     -webkit-tap-highlight-color: transparent;
+    color-scheme: light;
+}
+
+:root.dark-mode {
+    --bg-color: linear-gradient(160deg, #1A1A1A, #282828 30%, #445a24 100%);
+    --frame-bg: linear-gradient(180deg, rgba(30,30,30,0.9), rgba(40,40,40,0.96));
+    --text-color: #F0F0F0;
+    --news-bg: #3c4c28;
+    --news-color: #e6f7d5;
+    --icon-btn-bg: rgba(60,60,60,0.9);
+    --icon-color: #e6f7d5;
+    --ai-panel-bg: #222;
+    --chat-ai-bg: #333;
+    --chat-ai-color: #f0f0f0;
+    --chat-user-bg: #6c8b46;
+    --chat-user-color: #F0F0F0;
+    --send-btn-bg: #6c8b46;
+    --nav-btn-color: #F0F0F0;
+    --camera-btn-bg: linear-gradient(180deg, #6c8b46, #445a24);
+    --settings-border: rgba(255,255,255,0.05);
+    color-scheme: dark;
 }
 
 * {
@@ -21,7 +58,7 @@
 html, body {
     height: 100%;
     margin: 0;
-    background: linear-gradient(160deg, var(--ivory), #E8E7D8 30%, var(--olive) 100%);
+    background: var(--bg-color);
     overflow: hidden;
 }
 
@@ -38,7 +75,7 @@ body {
     height: 98vh;
     max-width: 420px;
     max-height: 850px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,240,0.96));
+    background: var(--frame-bg);
     border-radius: 28px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     position: relative;
@@ -67,18 +104,23 @@ body {
     }
     .top-row {
         padding: 6vmin 4vmin 2.5vmin;
+        padding-top: calc(6vmin + env(safe-area-inset-top)); /* NEW */
     }
     .content {
         padding: 2.5vmin 4vmin;
     }
     .ai-panel {
         padding: 4vmin 4vmin 2vmin;
+        padding-top: calc(4vmin + env(safe-area-inset-top)); /* NEW */
     }
     .ai-output-container {
         padding-bottom: 1vmin;
     }
     .ai-header {
         margin-bottom: 2vmin;
+    }
+    .search-row {
+        padding: 1vmin 4vmin 4vmin;
     }
 }
 
@@ -89,11 +131,12 @@ body {
     padding: 1vmin;
     gap: 2vmin;
     transition: all 0.4s ease;
+    padding-top: calc(1vmin + env(safe-area-inset-top)); /* NEW */
 }
 
 .weather-box {
-    background: linear-gradient(90deg, rgba(255,255,240,0.9), rgba(200,210,170,0.12));
-    color: #333;
+    background: var(--news-bg);
+    color: var(--news-color);
     padding: 2vmin 3vmin;
     border-radius: 14px;
     font-weight: 600;
@@ -112,6 +155,7 @@ body {
     opacity: 0.8;
     text-transform: capitalize;
     letter-spacing: 0;
+    color: var(--news-color);
 }
 
 .top-right {
@@ -122,7 +166,7 @@ body {
 
 .icon-btn {
     border: none;
-    background: rgba(255,255,255,0.9);
+    background: var(--icon-btn-bg);
     border-radius: 10px;
     padding: 2vmin;
     box-shadow: 0 4px 8px rgba(0,0,0,0.08);
@@ -134,7 +178,7 @@ body {
 }
 
 .icon-btn svg {
-    color: var(--olive);
+    color: var(--icon-color);
     width: 6vmin;
     height: 6vmin;
 }
@@ -148,24 +192,23 @@ body {
     flex: 1;
 }
 
-/* --- NEW: Enlarged News Bar CSS --- */
 .news-bar {
     width: 100%;
-    background-color: #e6f7d5;
-    color: #556B2F;
-    padding: 3vmin 4vmin; /* Increased padding */
-    font-size: 4vmin;    /* Increased font size */
+    background-color: var(--news-bg);
+    color: var(--news-color);
+    padding: 3vmin 4vmin;
+    font-size: 4vmin;
     font-weight: 600;
     overflow: hidden;
     position: relative;
-    border-radius: 18px; /* Slightly larger radius */
+    border-radius: 18px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    margin-bottom: 2vmin; /* Add some spacing below */
+    margin-bottom: 2vmin;
 }
 .news-text {
     display: inline-block;
     white-space: nowrap;
-    animation: marquee 20s linear infinite; /* Adjusted speed for longer text */
+    animation: marquee 20s linear infinite;
     padding-left: 100%;
 }
 @keyframes marquee {
@@ -205,7 +248,7 @@ body {
     min-width: 78%;
     max-width: 78%;
     height: 44vh;
-    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,245,0.9));
+    background: var(--frame-bg);
     border-radius: 16px;
     padding: 4vmin;
     box-shadow: var(--shadow);
@@ -226,7 +269,7 @@ body {
 
 .card p {
     margin: 0;
-    color: #444;
+    color: var(--text-color);
 }
 
 .dots {
@@ -265,7 +308,12 @@ body {
     border: none;
     box-shadow: 0 6px 16px rgba(0,0,0,0.06);
     outline: none;
-    background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(245,245,240,0.9));
+    background: var(--icon-btn-bg);
+    color: var(--text-color);
+}
+.search-input::placeholder {
+    color: var(--text-color);
+    opacity: 0.6;
 }
 
 .icon-btn.gallery, .icon-btn.mic {
@@ -275,7 +323,7 @@ body {
 }
 
 .send-btn {
-    background: var(--olive);
+    background: var(--send-btn-bg);
     color: white;
     border: none;
     border-radius: 12px;
@@ -285,11 +333,21 @@ body {
     cursor: pointer;
     min-width: 15vmin;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex; /* NEW: for icon */
+    align-items: center;
+    justify-content: center;
 }
 
 .send-btn:active {
     background: #445a24;
     transform: scale(0.96);
+}
+
+.send-btn svg {
+    width: 5vmin;
+    height: 5vmin;
+    fill: currentColor;
+    transform: rotate(-45deg) translate(2px, -2px);
 }
 
 .bottom-nav {
@@ -309,21 +367,21 @@ body {
     align-items: center;
     gap: 1vmin;
     font-size: 3vmin;
-    color: #333;
+    color: var(--nav-btn-color);
     cursor: pointer;
 }
 
 .nav-btn svg {
     width: 6vmin;
     height: 6vmin;
-    color: var(--olive);
+    color: var(--icon-color);
 }
 
 .camera-btn {
     width: 15vmin;
     height: 15vmin;
     border-radius: 999px;
-    background: linear-gradient(180deg, var(--olive), #6c8b46);
+    background: var(--camera-btn-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -346,7 +404,7 @@ body {
     right: -100vw;
     width: 100%;
     height: 100%;
-    background: #fff;
+    background: var(--ai-panel-bg);
     border-radius: 28px;
     box-shadow: var(--shadow);
     transition: right 0.4s ease;
@@ -408,7 +466,7 @@ body {
 .ai-header .close-btn svg {
     width: 5vmin;
     height: 5vmin;
-    color: #333;
+    color: var(--text-color);
 }
 .ai-output-container {
     flex: 1;
@@ -431,14 +489,14 @@ body {
     word-wrap: break-word;
 }
 .chat-bubble.user {
-    background: var(--olive);
-    color: white;
+    background: var(--chat-user-bg);
+    color: var(--chat-user-color);
     align-self: flex-end;
     border-bottom-right-radius: 4px;
 }
 .chat-bubble.ai {
-    background: #f0f0f0;
-    color: #333;
+    background: var(--chat-ai-bg);
+    color: var(--chat-ai-color);
     align-self: flex-start;
     border-bottom-left-radius: 4px;
 }
@@ -531,7 +589,7 @@ body {
     left: -100vw;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,240,0.96));
+    background: var(--ai-panel-bg);
     border-radius: 28px;
     box-shadow: var(--shadow);
     transition: left 0.4s ease-in-out;
@@ -571,12 +629,12 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 3vmin 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid var(--settings-border);
 }
 
 .setting-item label {
     font-size: 4vmin;
-    color: #333;
+    color: var(--text-color);
 }
 
 .language-select {
@@ -584,7 +642,53 @@ body {
     padding: 1.5vmin 2.5vmin;
     border-radius: 8px;
     border: 1px solid #ccc;
-    background: white;
+    background: var(--icon-btn-bg);
+    color: var(--text-color);
+}
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 8vmin;
+    height: 4.5vmin;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 4.5vmin;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 3.5vmin;
+    width: 3.5vmin;
+    left: 0.5vmin;
+    bottom: 0.5vmin;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--olive);
+}
+
+input:checked + .slider:before {
+    transform: translateX(3.5vmin);
 }
 
 .developed-by {
@@ -610,9 +714,9 @@ body {
         </div>
         <div class="top-right">
             <button class="icon-btn location" id="locationBtn" title="Location">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--olive)">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--icon-color)">
                     <circle cx="12" cy="12" r="3"/>
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="none" stroke="var(--olive)" stroke-width="2"/>
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
                 </svg>
             </button>
         </div>
@@ -639,22 +743,26 @@ body {
         <div class="dots" id="dots"></div>
         <div class="search-row">
             <button id="galleryBtn" class="icon-btn gallery" title="Gallery">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--olive)">
-                    <rect x="3" y="4" width="18" height="16" fill="none" stroke="var(--olive)" stroke-width="2"/>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--icon-color)">
+                    <rect x="3" y="4" width="18" height="16" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
                     <circle cx="8" cy="8" r="1.5"/>
-                    <path d="M3 20l4-5 5 6 7-9 5 7" fill="none" stroke="var(--olive)" stroke-width="2"/>
+                    <path d="M3 20l4-5 5 6 7-9 5 7" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
                 </svg>
             </button>
             <input id="searchInput" class="search-input" type="search" data-key="askAI" placeholder="Ask AI..."/>
             <button id="micBtn" class="icon-btn mic" title="Voice">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--olive)">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="var(--icon-color)">
                     <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
-                    <path d="M5 11a7 7 0 0 0 14 0" fill="none" stroke="var(--olive)" stroke-width="2"/>
-                    <line x1="12" y1="17" x2="12" y2="21" stroke="var(--olive)" stroke-width="2"/>
-                    <line x1="8" y1="21" x2="16" y2="21" stroke="var(--olive)" stroke-width="2"/>
+                    <path d="M5 11a7 7 0 0 0 14 0" fill="none" stroke="var(--icon-color)" stroke-width="2"/>
+                    <line x1="12" y1="17" x2="12" y2="21" stroke="var(--icon-color)" stroke-width="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21" stroke="var(--icon-color)" stroke-width="2"/>
                 </svg>
             </button>
-            <button id="sendBtn" class="send-btn" data-key="send">Send</button>
+            <button id="sendBtn" class="send-btn" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="white">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </button>
         </div>
     </main>
     <nav class="bottom-nav">
@@ -709,6 +817,13 @@ body {
                     <option value="ta">Tamil</option>
                 </select>
             </div>
+            <div class="setting-item">
+                <label for="dark-mode-toggle">Dark Mode</label>
+                <label class="theme-switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
         <div class="developed-by" data-key="developedBy">
             Developed by Team Azura
@@ -751,6 +866,7 @@ body {
     const closeSettingsBtn = document.getElementById("closeSettingsBtn");
     const languageSelect = document.getElementById("language-select");
     const newsBarText = document.getElementById("newsBarText");
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
 
     // --- State Variables ---
     let currentAbortController = null;
@@ -760,8 +876,8 @@ body {
     let isFetching = false;
 
     // --- Swipe gesture state variables ---
-    let startX = 0;
-    const swipeThreshold = 50;
+    let startY = 0;
+    const swipeThreshold = 150; // Adjusted for higher sensitivity
 
     // --- Translations Object ---
     const translations = {
@@ -911,7 +1027,6 @@ body {
         document.title = translations[lang].appName;
         newsBarText.textContent = translations[lang].news;
 
-        // Corrected: Reset chat history immediately to show the new greeting
         resetChatHistory();
     }
 
@@ -921,6 +1036,16 @@ body {
             parts: [{ text: translations[currentLanguage].greeting }]
         }];
         renderChat();
+    }
+
+    // --- Dark Mode Function ---
+    function setDarkMode(isDark) {
+        if (isDark) {
+            document.documentElement.classList.add('dark-mode');
+        } else {
+            document.documentElement.classList.remove('dark-mode');
+        }
+        localStorage.setItem('darkMode', isDark);
     }
 
     // --- Panel Control Functions ---
@@ -1109,6 +1234,13 @@ body {
             currentLanguage = savedLanguage;
             languageSelect.value = savedLanguage;
         }
+
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode !== null) {
+            const isDark = savedDarkMode === 'true';
+            darkModeToggle.checked = isDark;
+            setDarkMode(isDark);
+        }
         
         // Initialize chat history and UI with the correct language
         updateLanguage(currentLanguage);
@@ -1193,6 +1325,9 @@ body {
     languageSelect.addEventListener("change", (e) => {
         updateLanguage(e.target.value);
     });
+    darkModeToggle.addEventListener("change", (e) => {
+        setDarkMode(e.target.checked);
+    });
 
     newChatBtn.addEventListener("click", () => {
         resetChatHistory();
@@ -1256,11 +1391,12 @@ body {
     });
 
     // --- NEW: Swipe Gesture Logic ---
+    let startX = 0; // NEW: Reset to 0 as swipe is horizontal
     function handleSwipeStart(e) {
         startX = e.changedTouches[0].pageX;
     }
 
-    function handleSwipeEnd(e, panel, closeFunction, swipeDirection) {
+    function handleSwipeEnd(e, closeFunction, swipeDirection) {
         const endX = e.changedTouches[0].pageX;
         const diffX = endX - startX;
         
@@ -1273,10 +1409,10 @@ body {
     }
 
     aiPanel.addEventListener('touchstart', handleSwipeStart);
-    aiPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, aiPanel, closeAI, 'right'));
+    aiPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, closeAI, 'right'));
 
     settingsPanel.addEventListener('touchstart', handleSwipeStart);
-    settingsPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, settingsPanel, closeSettings, 'left'));
+    settingsPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, closeSettings, 'left'));
 
 </script>
 </body>
