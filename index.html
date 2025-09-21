@@ -148,6 +148,31 @@ body {
     flex: 1;
 }
 
+/* --- NEW: Enlarged News Bar CSS --- */
+.news-bar {
+    width: 100%;
+    background-color: #e6f7d5;
+    color: #556B2F;
+    padding: 3vmin 4vmin; /* Increased padding */
+    font-size: 4vmin;    /* Increased font size */
+    font-weight: 600;
+    overflow: hidden;
+    position: relative;
+    border-radius: 18px; /* Slightly larger radius */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 2vmin; /* Add some spacing below */
+}
+.news-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite; /* Adjusted speed for longer text */
+    padding-left: 100%;
+}
+@keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+
 .carousel-wrapper {
     display: flex;
     align-items: center;
@@ -314,6 +339,7 @@ body {
     color: white;
 }
 
+/* --- Panel Styles --- */
 .ai-panel {
     position: absolute;
     top: 0;
@@ -498,7 +524,7 @@ body {
     transition: opacity 0.3s ease, visibility 0s;
 }
 
-/* --- New Settings Panel Styles --- */
+/* --- Settings Panel Styles --- */
 .settings-panel {
     position: absolute;
     top: 0;
@@ -574,6 +600,9 @@ body {
 </head>
 <body>
 <div class="phone-frame" id="phoneFrame">
+    <div class="news-bar">
+        <span class="news-text" id="newsBarText"></span>
+    </div>
     <header class="top-row">
         <div class="weather-box" id="weatherBox">
             <span id="weatherTemp"></span>
@@ -708,7 +737,7 @@ body {
     const sendBtn = document.getElementById("sendBtn");
     const galleryBtn = document.getElementById("galleryBtn");
     const fileInput = document.getElementById("fileInput");
-    const micBtn = document.getElementById("micBtn");
+    const micBtn = document = document.getElementById("micBtn");
     const cameraBtn = document.getElementById("cameraBtn");
     const cancelBtn = document.getElementById("cancelBtn");
     const locationBtn = document.getElementById("locationBtn");
@@ -721,13 +750,18 @@ body {
     const settingsBtn = document.getElementById("settingsBtn");
     const closeSettingsBtn = document.getElementById("closeSettingsBtn");
     const languageSelect = document.getElementById("language-select");
+    const newsBarText = document.getElementById("newsBarText");
 
     // --- State Variables ---
     let currentAbortController = null;
     let popupTimeout = null;
-    let currentLanguage = localStorage.getItem('language') || 'en'; // Get from local storage, default to English
+    let currentLanguage = localStorage.getItem('language') || 'en';
     let chatHistory = [];
     let isFetching = false;
+
+    // --- Swipe gesture state variables ---
+    let startX = 0;
+    const swipeThreshold = 50;
 
     // --- Translations Object ---
     const translations = {
@@ -759,7 +793,8 @@ body {
             geolocationNotSupported: "Geolocation not supported.",
             tryAgain: "try again",
             send: "Send",
-            analyzeImage: "Analyze this image"
+            analyzeImage: "Analyze this image",
+            news: "Welcome to the Kerala Farmers App! | Weather and crop advisories for the next 7 days. | New government subsidies are now available. | Check out the latest market prices for your harvest. | Pest and disease alerts for coconut palms. | Click on the AI assistant to ask any question!"
         },
         ml: {
             appName: "കേരള കർഷകർ — മൊബൈൽ യുഐ",
@@ -789,7 +824,8 @@ body {
             geolocationNotSupported: "ജിയോലൊക്കേഷൻ പിന്തുണയ്ക്കുന്നില്ല.",
             tryAgain: "വീണ്ടും ശ്രമിക്കുക",
             send: "അയക്കുക",
-            analyzeImage: "ഈ ചിത്രം വിശകലനം ചെയ്യുക"
+            analyzeImage: "ഈ ചിത്രം വിശകലനം ചെയ്യുക",
+            news: "കേരള കർഷക ആപ്പിലേക്ക് സ്വാഗതം! | അടുത്ത 7 ദിവസത്തേക്കുള്ള കാലാവസ്ഥാ, വിള ഉപദേശങ്ങൾ. | പുതിയ സർക്കാർ സബ്സിഡികൾ ലഭ്യമാണ്. | നിങ്ങളുടെ വിളകൾക്കുള്ള ഏറ്റവും പുതിയ വിപണി വിലകൾ പരിശോധിക്കുക. | തെങ്ങുകൾക്കുള്ള കീട, രോഗ മുന്നറിയിപ്പുകൾ. | ഏത് ചോദ്യവും ചോദിക്കാൻ എ.ഐ. അസിസ്റ്റൻ്റിൽ ക്ലിക്ക് ചെയ്യുക!"
         },
         hi: {
             appName: "केरल किसान — मोबाइल यूआई",
@@ -819,7 +855,8 @@ body {
             geolocationNotSupported: "जियोलोकेशन समर्थित नहीं है।",
             tryAgain: "पुनः प्रयास करें",
             send: "भेजें",
-            analyzeImage: "इस छवि का विश्लेषण करें"
+            analyzeImage: "इस छवि का विश्लेषण करें",
+            news: "केरल किसान ऐप में आपका स्वागत है! | अगले 7 दिनों के लिए मौसम और फसल सलाह। | नई सरकारी सब्सिडी अब उपलब्ध हैं। | अपनी फसल के लिए नवीनतम बाज़ार कीमतों की जाँच करें। | नारियल के पेड़ों के लिए कीट और रोग अलर्ट। | कोई भी प्रश्न पूछने के लिए एआई सहायक पर क्लिक करें!"
         },
         ta: {
             appName: "கேரளா விவசாயிகள் — மொபைல் யுஐ",
@@ -849,14 +886,15 @@ body {
             geolocationNotSupported: "புவிஇருப்பிடம் ஆதரிக்கப்படவில்லை.",
             tryAgain: "மீண்டும் முயலுங்கள்",
             send: "அனுப்பு",
-            analyzeImage: "இந்த படத்தை பகுப்பாய்வு செய்யவும்"
+            analyzeImage: "இந்த படத்தை பகுப்பாய்வு செய்யவும்",
+            news: "கேரளா விவசாயிகள் பயன்பாட்டிற்கு வரவேற்கிறோம்! | அடுத்த 7 நாட்களுக்கான வானிலை மற்றும் பயிர் ஆலோசனைகள். | புதிய அரசு மானியங்கள் இப்போது கிடைக்கின்றன. | உங்கள் அறுவடைக்கான சமீபத்திய சந்தை விலைகளை சரிபார்க்கவும். | தென்னை மரங்களுக்கான பூச்சி மற்றும் நோய் எச்சரிக்கைகள். | எந்த கேள்வியும் கேட்க ஏஐ உதவியாளரைக் கிளிக் செய்யவும்!"
         }
     };
 
     // --- Language Translation Function ---
     function updateLanguage(lang) {
         currentLanguage = lang;
-        localStorage.setItem('language', lang); // Save language preference
+        localStorage.setItem('language', lang);
 
         const elementsToTranslate = document.querySelectorAll('[data-key]');
         elementsToTranslate.forEach(el => {
@@ -870,11 +908,11 @@ body {
             }
         });
         
-        // Update document title
         document.title = translations[lang].appName;
+        newsBarText.textContent = translations[lang].news;
 
-        // Re-render chat history with the new language. This is crucial for fixing the bug.
-        renderChat();
+        // Corrected: Reset chat history immediately to show the new greeting
+        resetChatHistory();
     }
 
     function resetChatHistory() {
@@ -1072,8 +1110,7 @@ body {
             languageSelect.value = savedLanguage;
         }
         
-        // Initialize chat history only once on DOM load
-        resetChatHistory();
+        // Initialize chat history and UI with the correct language
         updateLanguage(currentLanguage);
         updateLocationAndWeather();
         createDots();
@@ -1217,6 +1254,30 @@ body {
             updateDots();
         }, 80);
     });
+
+    // --- NEW: Swipe Gesture Logic ---
+    function handleSwipeStart(e) {
+        startX = e.changedTouches[0].pageX;
+    }
+
+    function handleSwipeEnd(e, panel, closeFunction, swipeDirection) {
+        const endX = e.changedTouches[0].pageX;
+        const diffX = endX - startX;
+        
+        if (swipeDirection === 'right' && diffX > swipeThreshold) {
+            closeFunction();
+        }
+        else if (swipeDirection === 'left' && diffX < -swipeThreshold) {
+            closeFunction();
+        }
+    }
+
+    aiPanel.addEventListener('touchstart', handleSwipeStart);
+    aiPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, aiPanel, closeAI, 'right'));
+
+    settingsPanel.addEventListener('touchstart', handleSwipeStart);
+    settingsPanel.addEventListener('touchend', (e) => handleSwipeEnd(e, settingsPanel, closeSettings, 'left'));
+
 </script>
 </body>
 </html>
